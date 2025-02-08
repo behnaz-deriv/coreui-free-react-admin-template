@@ -1,7 +1,7 @@
 import React from 'react'
 import { CCol, CRow, CFormSelect } from '@coreui/react'
 
-const Filters = ({ onFilterChange }) => {
+const Filters = ({ onFilterChange, selectedFilters, onClearFilters }) => {
   const textColor = '#fff'
   const selectBackground = '#1e1e2f'
 
@@ -39,12 +39,13 @@ const Filters = ({ onFilterChange }) => {
   }
 
   return (
-    <CRow className="g-3 mb-4">
+    <CRow className="g-3 mb-4 align-items-center">
       <CCol sm={12} md={4}>
         <CFormSelect
           style={selectStyles}
           onChange={(e) => onFilterChange('platform', e.target.value)}
           className="shadow-sm"
+          value={selectedFilters.platform}
           options={[
             { label: 'All Platforms', value: '' },
             ...platformOptions
@@ -56,6 +57,7 @@ const Filters = ({ onFilterChange }) => {
           style={selectStyles}
           onChange={(e) => onFilterChange('country', e.target.value)}
           className="shadow-sm"
+          value={selectedFilters.country}
           options={[
             { label: 'All Countries', value: '' },
             ...countryOptions
@@ -67,12 +69,33 @@ const Filters = ({ onFilterChange }) => {
           style={selectStyles}
           onChange={(e) => onFilterChange('paymentMethod', e.target.value)}
           className="shadow-sm"
+          value={selectedFilters.paymentMethod}
           options={[
             { label: 'All Payment Methods', value: '' },
             ...paymentMethodOptions
           ]}
         />
       </CCol>
+      {(selectedFilters.platform || selectedFilters.country || selectedFilters.paymentMethod) && (
+        <CCol sm={12} md="auto">
+          <button
+            onClick={onClearFilters}
+            style={{
+              backgroundColor: 'transparent',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              color: '#fff',
+              padding: '8px 16px',
+              borderRadius: '8px',
+              cursor: 'pointer',
+              transition: 'all 0.3s ease',
+            }}
+            onMouseOver={(e) => e.target.style.backgroundColor = 'rgba(255, 255, 255, 0.1)'}
+            onMouseOut={(e) => e.target.style.backgroundColor = 'transparent'}
+          >
+            Clear Filters
+          </button>
+        </CCol>
+      )}
     </CRow>
   )
 }

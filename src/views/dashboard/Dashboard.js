@@ -11,20 +11,23 @@ const Dashboard = () => {
   const [chartData, setChartData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const [filters, setFilters] = useState({
+
+  const defaultFilters = {
     country: 'France',
-    platform: '',
-    paymentMethod: ''
-  })
+    platform: 'DerivX',
+    paymentMethod: 'AirTM'
+  }
+
+  const [filters, setFilters] = useState(defaultFilters)
 
   useEffect(() => {
     const loadChartData = async () => {
       try {
         setLoading(true)
         const data = await fetchChartData({
-          country: filters.country || 'France',
-          platform: filters.platform || 'DerivX',
-          paymentMethod: filters.paymentMethod || 'AirTM'
+          country: filters.country,
+          platform: filters.platform,
+          paymentMethod: filters.paymentMethod
         })
         setChartData(data)
         setError(null)
@@ -46,6 +49,10 @@ const Dashboard = () => {
     }))
   }
 
+  const handleClearFilters = () => {
+    setFilters(defaultFilters)
+  }
+
   if (loading) {
     return <div>Loading...</div>
   }
@@ -58,14 +65,14 @@ const Dashboard = () => {
     <>
       <Filters 
         onFilterChange={handleFilterChange}
-        chartData={chartData}
+        selectedFilters={filters}
+        onClearFilters={handleClearFilters}
       />
       <CRow>
         {/* Left side - Transactions (60%) */}
         <CCol xs={12} lg={7}>
           <TransactionsList 
-            data={chartData?.suspected_transactions} 
-            chartData={chartData}
+            data={chartData?.suspected_transactions}
           />
         </CCol>
 
