@@ -20,11 +20,22 @@ const PaymentMethodsChart = () => {
     datasets: [
       {
         label: 'Transaction Volume',
-        backgroundColor: 'rgba(54, 162, 235, 0.8)',
+        data: [65, 59, 80, 81, 56, 55, 40, 35, 30, 25],
+        backgroundColor: (context) => {
+          const chart = context.chart
+          const { ctx, chartArea } = chart
+          if (!chartArea) return null
+
+          const gradient = ctx.createLinearGradient(chartArea.left, 0, chartArea.right, 0)
+          gradient.addColorStop(0, 'rgba(54, 162, 235, 0.6)')
+          gradient.addColorStop(1, 'rgba(54, 162, 235, 0.9)')
+          return gradient
+        },
         borderColor: 'rgba(54, 162, 235, 1)',
         borderWidth: 1,
+        borderRadius: 4,
         hoverBackgroundColor: 'rgba(54, 162, 235, 1)',
-        data: [65, 59, 80, 81, 56, 55, 40, 35, 30, 25],
+        barPercentage: 0.7,
       },
     ],
   }
@@ -40,18 +51,31 @@ const PaymentMethodsChart = () => {
               data={paymentData}
               options={{
                 indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                   legend: {
                     display: false,
+                  },
+                  tooltip: {
+                    callbacks: {
+                      label: (context) => `Volume: ${context.parsed.x}`,
+                    },
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
                   },
                 },
                 scales: {
                   x: {
                     grid: {
-                      color: 'rgba(var(--cui-body-color-rgb), .1)',
+                      color: 'rgba(var(--cui-body-color-rgb), .05)',
+                      drawBorder: false,
                     },
                     ticks: {
                       color: 'rgb(var(--cui-body-color-rgb))',
+                      font: {
+                        size: 12,
+                      },
                     },
                   },
                   y: {
@@ -60,13 +84,24 @@ const PaymentMethodsChart = () => {
                     },
                     ticks: {
                       color: 'rgb(var(--cui-body-color-rgb))',
+                      font: {
+                        size: 12,
+                        weight: '500',
+                      },
                     },
                   },
                 },
-                maintainAspectRatio: false,
-                aspectRatio: 2,
+                animation: {
+                  duration: 1000,
+                  easing: 'easeInOutQuart',
+                },
+                layout: {
+                  padding: {
+                    right: 10,
+                  },
+                },
               }}
-              style={{ height: '400px' }}
+              style={{ height: '450px' }}
             />
           </CCol>
         </CRow>

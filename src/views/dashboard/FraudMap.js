@@ -10,13 +10,20 @@ const FraudMap = () => {
       {
         label: 'Fraud Cases',
         data: [65, 59, 80, 81, 56],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.8)',
-          'rgba(54, 162, 235, 0.8)',
-          'rgba(255, 206, 86, 0.8)',
-          'rgba(75, 192, 192, 0.8)',
-          'rgba(153, 102, 255, 0.8)',
-        ],
+        backgroundColor: (context) => {
+          const chart = context.chart
+          const { ctx, chartArea } = chart
+          if (!chartArea) return null
+
+          const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top)
+          gradient.addColorStop(0, 'rgba(255, 99, 132, 0.2)')
+          gradient.addColorStop(1, 'rgba(255, 99, 132, 0.8)')
+          return gradient
+        },
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1,
+        borderRadius: 8,
+        maxBarThickness: 50,
       },
     ],
   }
@@ -31,32 +38,60 @@ const FraudMap = () => {
               type="bar"
               data={fraudData}
               options={{
+                responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                   legend: {
-                    labels: {
-                      color: 'rgb(var(--cui-body-color-rgb))',
+                    display: false,
+                  },
+                  title: {
+                    display: true,
+                    text: 'Fraud Cases by Country',
+                    color: 'rgb(var(--cui-body-color-rgb))',
+                    font: {
+                      size: 16,
+                      weight: 'bold',
+                    },
+                    padding: 20,
+                  },
+                  tooltip: {
+                    callbacks: {
+                      label: (context) => `Cases: ${context.parsed.y}`,
                     },
                   },
                 },
                 scales: {
                   y: {
+                    beginAtZero: true,
                     grid: {
-                      color: 'rgba(var(--cui-body-color-rgb), .1)',
+                      color: 'rgba(var(--cui-body-color-rgb), .05)',
+                      drawBorder: false,
                     },
                     ticks: {
                       color: 'rgb(var(--cui-body-color-rgb))',
+                      font: {
+                        size: 12,
+                      },
                     },
                   },
                   x: {
                     grid: {
-                      color: 'rgba(var(--cui-body-color-rgb), .1)',
+                      display: false,
                     },
                     ticks: {
                       color: 'rgb(var(--cui-body-color-rgb))',
+                      font: {
+                        size: 12,
+                      },
                     },
                   },
                 },
+                animation: {
+                  duration: 1000,
+                  easing: 'easeInOutQuart',
+                },
               }}
+              style={{ minHeight: '300px' }}
             />
           </CCol>
         </CRow>
