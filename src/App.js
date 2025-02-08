@@ -3,6 +3,7 @@ import { HashRouter, Route, Routes } from 'react-router-dom'
 import { useSelector } from 'react-redux'
 
 import { CSpinner, useColorModes } from '@coreui/react'
+import ChatbotWidget from './components/ChatbotWidget'
 import './scss/style.scss'
 
 // We use those styles to show code examples, you should remove them in your application.
@@ -36,7 +37,9 @@ const App = () => {
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <HashRouter>
+    <>
+      <ChatbotWidget />
+      <HashRouter>
       <Suspense
         fallback={
           <div className="pt-3 text-center">
@@ -52,7 +55,8 @@ const App = () => {
           <Route path="*" name="Home" element={<DefaultLayout />} />
         </Routes>
       </Suspense>
-    </HashRouter>
+      </HashRouter>
+    </>
   )
 }
 
