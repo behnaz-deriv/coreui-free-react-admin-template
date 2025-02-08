@@ -1,13 +1,37 @@
-import React from 'react'
-import { CCol, CRow, CFormSelect } from '@coreui/react'
+import React, { useState, useEffect } from 'react'
+import { CCol, CRow, CFormSelect, CSpinner } from '@coreui/react'
 
 const Filters = ({ onFilterChange }) => {
+  const [countries, setCountries] = useState([])
+  const [loading, setLoading] = useState(true)
   const textColor = '#fff'
   const selectBackground = '#1e1e2f'
 
+  useEffect(() => {
+    const fetchCountries = async () => {
+      try {
+        const response = await fetch('https://restcountries.com/v3.1/all')
+        const data = await response.json()
+        
+        // Sort countries by name
+        const sortedCountries = data
+          .map(country => country.name.common)
+          .sort((a, b) => a.localeCompare(b))
+        
+        setCountries(['All Countries', ...sortedCountries])
+        setLoading(false)
+      } catch (error) {
+        console.error('Error fetching countries:', error)
+        setCountries(['All Countries']) // Fallback
+        setLoading(false)
+      }
+    }
+
+    fetchCountries()
+  }, [])
+
   // Sample filter options - replace with actual data
   const platforms = ['All Platforms', 'MT5', 'cTrader', 'DerivX', 'Other']
-  const countries = ['All Countries', 'Malaysia', 'Indonesia', 'Thailand', 'Vietnam', 'Philippines']
   const paymentMethods = [
     'All Payment Methods',
     'Credit/Debit Card',
@@ -50,15 +74,21 @@ const Filters = ({ onFilterChange }) => {
         />
       </CCol>
       <CCol sm={12} md={4}>
-        <CFormSelect
-          style={selectStyles}
-          onChange={(e) => handleFilterChange('country', e.target.value)}
-          className="shadow-sm"
-          options={countries.map((country) => ({
-            label: country,
-            value: country === 'All Countries' ? '' : country,
-          }))}
-        />
+        {loading ? (
+          <div className="d-flex align-items-center" style={{ height: '38px' }}>
+            <CSpinner size="sm" color="light" className="ms-2" />
+          </div>
+        ) : (
+          <CFormSelect
+            style={selectStyles}
+            onChange={(e) => handleFilterChange('country', e.target.value)}
+            className="shadow-sm"
+            options={countries.map((country) => ({
+              label: country,
+              value: country === 'All Countries' ? '' : country,
+            }))}
+          />
+        )}
       </CCol>
       <CCol sm={12} md={4}>
         <CFormSelect
