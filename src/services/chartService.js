@@ -2,13 +2,23 @@ const CHART_API_URL = 'https://t51uru.buildship.run/get_chart_data'
 
 export const fetchChartData = async (filters = {}) => {
   try {
-    const queryParams = new URLSearchParams({
-      country: filters.country || 'France',
-      payment_method: filters.paymentMethod || 'AirTM',
-      platform: filters.platform || 'DerivX'
-    })
+    const queryParams = new URLSearchParams()
+    
+    // Only add parameters if they have non-empty values
+    if (filters.country) {
+      queryParams.append('country', filters.country)
+    }
+    if (filters.paymentMethod) {
+      queryParams.append('payment_method', filters.paymentMethod)
+    }
+    if (filters.platform) {
+      queryParams.append('platform', filters.platform)
+    }
 
-    const response = await fetch(`${CHART_API_URL}?${queryParams}`, {
+    const queryString = queryParams.toString()
+    const url = queryString ? `${CHART_API_URL}?${queryString}` : CHART_API_URL
+    
+    const response = await fetch(url, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',

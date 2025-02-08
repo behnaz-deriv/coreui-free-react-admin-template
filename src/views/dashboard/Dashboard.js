@@ -24,11 +24,13 @@ const Dashboard = () => {
     const loadChartData = async () => {
       try {
         setLoading(true)
-        const data = await fetchChartData({
-          country: filters.country,
-          platform: filters.platform,
-          paymentMethod: filters.paymentMethod
-        })
+        // Only include non-empty filter values
+        const activeFilters = {}
+        if (filters.country !== '') activeFilters.country = filters.country
+        if (filters.platform !== '') activeFilters.platform = filters.platform
+        if (filters.paymentMethod !== '') activeFilters.paymentMethod = filters.paymentMethod
+        
+        const data = await fetchChartData(activeFilters)
         setChartData(data)
         setError(null)
       } catch (err) {
