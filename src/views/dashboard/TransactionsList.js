@@ -1,18 +1,12 @@
-import React, { useState, useMemo } from 'react'
+import React from 'react'
 import { CCard, CCardBody, CCardHeader, CTable } from '@coreui/react'
-import Filters from './Filters'
 
-const TransactionsList = ({ data: transactionsData, chartData }) => {
-  const [filters, setFilters] = useState({
-    platform: '',
-    country: '',
-    paymentMethod: '',
-  })
+const TransactionsList = ({ data: transactionsData }) => {
   const textColor = '#fff'
   const chartBackground = '#1e1e2f'
 
   const transactions = transactionsData?.data || []
-
+  
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -42,22 +36,6 @@ const TransactionsList = ({ data: transactionsData, chartData }) => {
     }
   }
 
-  const handleFilterChange = (type, value) => {
-    setFilters((prev) => ({
-      ...prev,
-      [type]: value,
-    }))
-  }
-
-  const filteredTransactions = useMemo(() => {
-    return transactions.filter((transaction) => {
-      const platformMatch = !filters.platform || transaction.platform === filters.platform
-      const countryMatch = !filters.country || transaction.country === filters.country
-      const methodMatch = !filters.paymentMethod || transaction.payment_method === filters.paymentMethod
-      return platformMatch && countryMatch && methodMatch
-    })
-  }, [filters, transactions])
-
   return (
     <CCard
       className="h-100 shadow-lg border-0"
@@ -70,7 +48,6 @@ const TransactionsList = ({ data: transactionsData, chartData }) => {
         <h4 className="mb-0" style={{ color: textColor }}>
           Recent Transactions
         </h4>
-        <Filters onFilterChange={handleFilterChange} chartData={chartData} />
       </CCardHeader>
       <CCardBody>
         <div
@@ -105,7 +82,7 @@ const TransactionsList = ({ data: transactionsData, chartData }) => {
               </tr>
             </thead>
             <tbody>
-              {filteredTransactions.map((transaction) => (
+              {transactions.map((transaction) => (
                 <tr key={transaction.transaction_id}>
                   <td>{transaction.transaction_id}</td>
                   <td>{transaction.client_id}</td>

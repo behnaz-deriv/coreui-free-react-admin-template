@@ -1,31 +1,32 @@
-import React, { useState, useEffect, useMemo } from 'react'
-import { CCol, CRow, CFormSelect, CSpinner } from '@coreui/react'
+import React from 'react'
+import { CCol, CRow, CFormSelect } from '@coreui/react'
 
-const Filters = ({ onFilterChange, chartData }) => {
+const Filters = ({ onFilterChange }) => {
   const textColor = '#fff'
   const selectBackground = '#1e1e2f'
 
-  // Get unique countries from transactions data
-  const countries = useMemo(() => {
-    const countryList = chartData?.suspected_transactions?.data?.map(t => t.country) || []
-    return ['All Countries', ...new Set(countryList)].sort()
-  }, [chartData])
+  const platformOptions = [
+    { value: 'DerivX', label: 'DerivX' },
+    { value: 'Deriv Trader', label: 'Deriv Trader' },
+    { value: 'MT5', label: 'MT5' },
+  ]
 
-  // Get unique platforms from trading_platforms data
-  const platforms = useMemo(() => {
-    const platformList = chartData?.trading_platforms?.data?.map(p => p.platform) || []
-    return ['All Platforms', ...new Set(platformList)]
-  }, [chartData])
+  const paymentMethodOptions = [
+    { value: 'OZOW', label: 'OZOW' },
+    { value: 'Credit Card', label: 'Credit Card' },
+    { value: 'Skrill', label: 'Skrill' },
+    { value: 'Perfect Money', label: 'Perfect Money' },
+    { value: 'ADVCash', label: 'ADVCash' },
+    { value: 'AirTM', label: 'AirTM' },
+  ]
 
-  // Get unique payment methods from payment_methods data
-  const paymentMethods = useMemo(() => {
-    const methodList = chartData?.payment_methods?.data?.map(p => p.method) || []
-    return ['All Payment Methods', ...new Set(methodList)]
-  }, [chartData])
-
-  const handleFilterChange = (type, value) => {
-    onFilterChange(type, value)
-  }
+  const countryOptions = [
+    { value: 'France', label: 'France' },
+    { value: 'Germany', label: 'Germany' },
+    { value: 'India', label: 'India' },
+    { value: 'Russia', label: 'Russia' },
+    { value: 'South Africa', label: 'South Africa' },
+  ]
 
   const selectStyles = {
     backgroundColor: selectBackground,
@@ -42,34 +43,34 @@ const Filters = ({ onFilterChange, chartData }) => {
       <CCol sm={12} md={4}>
         <CFormSelect
           style={selectStyles}
-          onChange={(e) => handleFilterChange('platform', e.target.value)}
+          onChange={(e) => onFilterChange('platform', e.target.value)}
           className="shadow-sm"
-          options={platforms.map((platform) => ({
-            label: platform,
-            value: platform === 'All Platforms' ? '' : platform,
-          }))}
+          options={[
+            { label: 'All Platforms', value: '' },
+            ...platformOptions
+          ]}
         />
       </CCol>
       <CCol sm={12} md={4}>
         <CFormSelect
           style={selectStyles}
-          onChange={(e) => handleFilterChange('country', e.target.value)}
+          onChange={(e) => onFilterChange('country', e.target.value)}
           className="shadow-sm"
-          options={countries.map((country) => ({
-            label: country,
-            value: country === 'All Countries' ? '' : country,
-          }))}
+          options={[
+            { label: 'All Countries', value: '' },
+            ...countryOptions
+          ]}
         />
       </CCol>
       <CCol sm={12} md={4}>
         <CFormSelect
           style={selectStyles}
-          onChange={(e) => handleFilterChange('paymentMethod', e.target.value)}
+          onChange={(e) => onFilterChange('paymentMethod', e.target.value)}
           className="shadow-sm"
-          options={paymentMethods.map((method) => ({
-            label: method,
-            value: method === 'All Payment Methods' ? '' : method,
-          }))}
+          options={[
+            { label: 'All Payment Methods', value: '' },
+            ...paymentMethodOptions
+          ]}
         />
       </CCol>
     </CRow>
