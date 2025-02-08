@@ -34,7 +34,7 @@ const ChatbotWidget = () => {
         script.innerHTML = `
           import Chatbot from "https://cdn.jsdelivr.net/npm/flowise-embed/dist/web.js"
           Chatbot.init({
-            chatflowid: "eff567e5-eb02-4e50-9af1-ed98af76cb6b",
+            chatflowid: "70b839f9-7f4e-4430-b77a-9bfa19cc9c62",
             apiHost: "https://flowise-dev.deriv.ai",
             theme: {
               button: {
