@@ -8,22 +8,36 @@ const TransactionsList = ({ data: transactionsData }) => {
   const transactions = transactionsData?.data || []
   
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-    })
+    try {
+      if (!dateString) return '-'
+      const date = new Date(dateString)
+      if (isNaN(date.getTime())) return '-'
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      })
+    } catch (error) {
+      console.error('Error formatting date:', error)
+      return '-'
+    }
   }
 
   const formatAmount = (amount) => {
-    if (amount === null) return '-'
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount)
+    try {
+      if (amount === null || amount === undefined || isNaN(amount)) return '-'
+      return new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+      }).format(amount)
+    } catch (error) {
+      console.error('Error formatting amount:', error)
+      return '-'
+    }
   }
 
   const getTypeColor = (type) => {
+    if (!type) return '#ffffff' // Default color if type is undefined
     switch (type.toLowerCase()) {
       case 'withdrawal':
         return '#e55353'
@@ -46,7 +60,7 @@ const TransactionsList = ({ data: transactionsData }) => {
     >
       <CCardHeader className="border-bottom-0 bg-transparent pt-4">
         <h4 className="mb-0" style={{ color: textColor }}>
-          Recent Transactions
+          Suspicious Accounts
         </h4>
       </CCardHeader>
       <CCardBody>
@@ -70,36 +84,16 @@ const TransactionsList = ({ data: transactionsData }) => {
           >
             <thead>
               <tr>
-                <th>Transaction ID</th>
                 <th>Client ID</th>
-                <th>Date</th>
-                <th>Type</th>
-                <th>Amount</th>
-                <th>Platform</th>
-                <th>Payment Method</th>
                 <th>Country</th>
-                <th>KYC</th>
+                <th>KYC Status</th>
+                <th>Account Status</th>
               </tr>
             </thead>
             <tbody>
-              {transactions.map((transaction) => (
-                <tr key={transaction.transaction_id}>
-                  <td>{transaction.transaction_id}</td>
+              {transactions.map((transaction, index) => (
+                <tr key={`transaction-${index}`}>
                   <td>{transaction.client_id}</td>
-                  <td>{formatDate(transaction.transaction_date)}</td>
-                  <td>
-                    <span
-                      style={{
-                        color: getTypeColor(transaction.transaction_type),
-                        fontWeight: '500',
-                      }}
-                    >
-                      {transaction.transaction_type}
-                    </span>
-                  </td>
-                  <td>{formatAmount(transaction.amount)}</td>
-                  <td>{transaction.platform}</td>
-                  <td>{transaction.payment_method || '-'}</td>
                   <td>{transaction.country}</td>
                   <td>
                     <span
@@ -108,7 +102,17 @@ const TransactionsList = ({ data: transactionsData }) => {
                         fontWeight: '500',
                       }}
                     >
-                      {transaction.kyc_completed ? 'Yes' : 'No'}
+                      {transaction.kyc_completed ? 'Completed' : 'Pending'}
+                    </span>
+                  </td>
+                  <td>
+                    <span
+                      style={{
+                        color: transaction.account_status === 'Normal' ? '#2eb85c' : '#e55353',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {transaction.account_status}
                     </span>
                   </td>
                 </tr>

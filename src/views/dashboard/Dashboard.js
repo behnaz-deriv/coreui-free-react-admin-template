@@ -29,6 +29,10 @@ const Dashboard = () => {
         if (filters.paymentMethod !== '') activeFilters.paymentMethod = filters.paymentMethod
         
         const data = await fetchChartData(activeFilters)
+        console.log('Fetched chart data:', data)
+        if (!data) {
+          throw new Error('No data received from API')
+        }
         setChartData(data)
         setError(null)
       } catch (err) {
@@ -58,12 +62,18 @@ const Dashboard = () => {
   }
 
   if (loading) {
-    return <div>Loading...</div>
+    return <div style={{ color: '#fff' }}>Loading...</div>
   }
 
   if (error) {
-    return <div>Error: {error}</div>
+    return <div style={{ color: '#fff' }}>Error: {error}</div>
   }
+
+  if (!chartData) {
+    return <div style={{ color: '#fff' }}>No data available</div>
+  }
+
+  console.log('Rendering with chart data:', chartData)
 
   return (
     <>
