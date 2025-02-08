@@ -1,4 +1,36 @@
 // Custom dark mode styles
+// Override CoreUI modal z-index
+.modal {
+  z-index: 1060 !important;
+}
+
+.modal-backdrop {
+  z-index: 1050 !important;
+}
+
+.modal-blur {
+  z-index: 1060;
+  .modal-content {
+    background: var(--cui-modal-bg);
+    border-color: var(--cui-modal-border-color);
+    color: var(--cui-modal-content-color);
+  }
+
+  .modal-header {
+    background: var(--cui-modal-header-bg);
+    border-bottom-color: var(--cui-modal-header-border-color);
+  }
+
+  .modal-footer {
+    background: var(--cui-modal-footer-bg);
+    border-top-color: var(--cui-modal-footer-border-color);
+  }
+
+  .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+  }
+}
+
 [data-coreui-theme="dark"] {
   .text-body-secondary {
     color: rgba(255, 255, 255, 0.6) !important;
