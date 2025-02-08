@@ -326,18 +326,18 @@ const Dashboard = () => {
               <CTable align="middle" className="mb-0 border" hover responsive>
                 <CTableHead className="text-nowrap">
                   <CTableRow>
-                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                    <CTableHeaderCell className="text-center">
                       <CIcon icon={cilPeople} />
                     </CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary">User</CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                    <CTableHeaderCell>User</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">
                       Country
                     </CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary">Usage</CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary text-center">
+                    <CTableHeaderCell>Usage</CTableHeaderCell>
+                    <CTableHeaderCell className="text-center">
                       Payment Method
                     </CTableHeaderCell>
-                    <CTableHeaderCell className="bg-body-tertiary">Activity</CTableHeaderCell>
+                    <CTableHeaderCell>Activity</CTableHeaderCell>
                   </CTableRow>
                 </CTableHead>
                 <CTableBody>

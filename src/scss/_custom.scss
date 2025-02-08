@@ -1,1 +1,18 @@
-// Here you can add other styles
+// Custom dark mode styles
+[data-coreui-theme="dark"] {
+  .text-body-secondary {
+    color: rgba(255, 255, 255, 0.6) !important;
+  }
+
+  .border-start {
+    border-color: var(--cui-border-color) !important;
+  }
+
+  hr {
+    border-color: var(--cui-border-color);
+  }
+
+  .progress {
+    background-color: var(--cui-border-color);
+  }
+}

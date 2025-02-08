@@ -2,4 +2,23 @@
 //
 // If you want to customize your project please add your variables below.
 
+$enable-dark-mode: true !default;
 $enable-deprecation-messages: false !default;
+
+// Dark mode colors
+:root[data-coreui-theme="dark"] {
+  --cui-body-bg: #1e1e2f;
+  --cui-body-color: #e9ecef;
+  --cui-card-bg: #27293d;
+  --cui-card-border-color: #2b2e4c;
+  --cui-border-color: #2b2e4c;
+  --cui-table-border-color: #2b2e4c;
+  --cui-table-striped-bg: rgba(255, 255, 255, 0.05);
+  --cui-table-hover-bg: rgba(255, 255, 255, 0.075);
+  --cui-input-bg: #27293d;
+  --cui-input-border-color: #2b2e4c;
+  --cui-dropdown-bg: #27293d;
+  --cui-dropdown-border-color: #2b2e4c;
+  --cui-dropdown-link-color: #e9ecef;
+  --cui-dropdown-link-hover-bg: #2b2e4c;
+}

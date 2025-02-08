@@ -1,63 +1,53 @@
 body {
-  background-color: var(--cui-tertiary-bg);
+  background-color: var(--cui-body-bg);
+  color: var(--cui-body-color);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .wrapper {
   width: 100%;
-  padding-inline: var(--cui-sidebar-occupy-start, 0) var(--cui-sidebar-occupy-end, 0);
   will-change: auto;
-  @include transition(padding .15s);
+  background-color: var(--cui-body-bg);
+  transition: background-color 0.3s ease;
 }
 
-.header > .container-fluid,
-.sidebar-header {
-  min-height: calc(4rem + 1px); // stylelint-disable-line function-disallowed-list
+.header {
+  background-color: var(--cui-body-bg);
+  border-bottom: 1px solid var(--cui-border-color);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.sidebar-brand-full {
-  margin-left: 3px;
+.card {
+  background-color: var(--cui-card-bg);
+  border-color: var(--cui-card-border-color);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
 }
 
-.sidebar-header {
-  .nav-underline-border {
-    --cui-nav-underline-border-link-padding-x: 1rem;
-    --cui-nav-underline-border-gap: 0;
+.table {
+  --cui-table-color: var(--cui-body-color);
+  --cui-table-bg: var(--cui-card-bg);
+  --cui-table-border-color: var(--cui-border-color);
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.dropdown-menu {
+  background-color: var(--cui-dropdown-bg);
+  border-color: var(--cui-dropdown-border-color);
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+
+  .dropdown-item {
+    color: var(--cui-dropdown-link-color);
+
+    &:hover {
+      background-color: var(--cui-dropdown-link-hover-bg);
+    }
   }
-
-  .nav-link {
-    display: flex;
-    align-items: center;
-    min-height: calc(4rem + 1px); // stylelint-disable-line function-disallowed-list
-  }
-}
-
-.sidebar-toggler {
-  margin-inline-start: auto;
-}
-
-.sidebar-narrow,
-.sidebar-narrow-unfoldable:not(:hover) {
-  .sidebar-toggler {
-    margin-inline-end: auto
-  }
-}
-
-.header > .container-fluid + .container-fluid {
-  min-height: 3rem;
-}
-
-.footer {
-  min-height: calc(3rem + 1px); // stylelint-disable-line function-disallowed-list
 }
 
 @if $enable-dark-mode {
   @include color-mode(dark) {
     body {
-      background-color: var(--cui-dark-bg-subtle);
-    }
-
-    .footer {
-      --cui-footer-bg: var(--cui-body-bg);
+      background-color: var(--cui-body-bg);
     }
   }
 }
