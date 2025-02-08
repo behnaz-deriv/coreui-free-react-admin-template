@@ -1,12 +1,18 @@
-import React from 'react'
+import React, { useState, useMemo } from 'react'
 import { CCard, CCardBody, CCardHeader, CTable } from '@coreui/react'
+import Filters from './Filters'
 
 const TransactionsList = () => {
+  const [filters, setFilters] = useState({
+    platform: '',
+    country: '',
+    paymentMethod: '',
+  })
   const textColor = '#fff'
   const chartBackground = '#1e1e2f'
 
-  // Sample data - replace with actual data
-  const transactions = [
+  // Sample data with country field - replace with actual data
+  const allTransactions = [
     {
       id: '1',
       date: '2024-02-08',
@@ -14,6 +20,7 @@ const TransactionsList = () => {
       amount: '$1,234.56',
       method: 'Credit Card',
       status: 'Completed',
+      country: 'Malaysia',
     },
     {
       id: '2',
@@ -22,6 +29,7 @@ const TransactionsList = () => {
       amount: '$2,345.67',
       method: 'Bank Transfer',
       status: 'Pending',
+      country: 'Indonesia',
     },
     {
       id: '3',
@@ -30,6 +38,7 @@ const TransactionsList = () => {
       amount: '$3,456.78',
       method: 'E-wallet',
       status: 'Completed',
+      country: 'Thailand',
     },
     {
       id: '4',
@@ -38,6 +47,7 @@ const TransactionsList = () => {
       amount: '$4,567.89',
       method: 'Cryptocurrency',
       status: 'Failed',
+      country: 'Vietnam',
     },
     {
       id: '5',
@@ -46,6 +56,7 @@ const TransactionsList = () => {
       amount: '$5,678.90',
       method: 'Wire Transfer',
       status: 'Completed',
+      country: 'Philippines',
     },
   ]
 
@@ -62,6 +73,22 @@ const TransactionsList = () => {
     }
   }
 
+  const handleFilterChange = (type, value) => {
+    setFilters((prev) => ({
+      ...prev,
+      [type]: value,
+    }))
+  }
+
+  const filteredTransactions = useMemo(() => {
+    return allTransactions.filter((transaction) => {
+      const platformMatch = !filters.platform || transaction.platform === filters.platform
+      const countryMatch = !filters.country || transaction.country === filters.country
+      const methodMatch = !filters.paymentMethod || transaction.method === filters.paymentMethod
+      return platformMatch && countryMatch && methodMatch
+    })
+  }, [filters, allTransactions])
+
   return (
     <CCard
       className="h-100 shadow-lg border-0"
@@ -74,6 +101,7 @@ const TransactionsList = () => {
         <h4 className="mb-0" style={{ color: textColor }}>
           Recent Transactions
         </h4>
+        <Filters onFilterChange={handleFilterChange} />
       </CCardHeader>
       <CCardBody>
         <div
@@ -104,7 +132,7 @@ const TransactionsList = () => {
               </tr>
             </thead>
             <tbody>
-              {transactions.map((transaction) => (
+              {filteredTransactions.map((transaction) => (
                 <tr key={transaction.id}>
                   <td>{transaction.date}</td>
                   <td>{transaction.platform}</td>
