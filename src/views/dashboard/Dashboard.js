@@ -12,13 +12,11 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
 
-  const defaultFilters = {
-    country: 'France',
-    platform: 'DerivX',
-    paymentMethod: 'AirTM'
-  }
-
-  const [filters, setFilters] = useState(defaultFilters)
+  const [filters, setFilters] = useState({
+    country: '',
+    platform: '',
+    paymentMethod: ''
+  })
 
   useEffect(() => {
     const loadChartData = async () => {
@@ -52,7 +50,11 @@ const Dashboard = () => {
   }
 
   const handleClearFilters = () => {
-    setFilters(defaultFilters)
+    setFilters({
+      country: '',
+      platform: '',
+      paymentMethod: ''
+    })
   }
 
   if (loading) {

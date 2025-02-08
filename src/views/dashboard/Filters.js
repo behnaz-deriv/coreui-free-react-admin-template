@@ -38,6 +38,11 @@ const Filters = ({ onFilterChange, selectedFilters, onClearFilters }) => {
     '--cui-form-select-indicator-color': textColor,
   }
 
+  // Check if any filter is active (not empty)
+  const hasActiveFilters = selectedFilters.platform !== '' || 
+                          selectedFilters.country !== '' || 
+                          selectedFilters.paymentMethod !== ''
+
   return (
     <CRow className="g-3 mb-4 align-items-center">
       <CCol sm={12} md={4}>
@@ -76,7 +81,7 @@ const Filters = ({ onFilterChange, selectedFilters, onClearFilters }) => {
           ]}
         />
       </CCol>
-      {(selectedFilters.platform || selectedFilters.country || selectedFilters.paymentMethod) && (
+      {hasActiveFilters && (
         <CCol sm={12} md="auto">
           <button
             onClick={onClearFilters}
