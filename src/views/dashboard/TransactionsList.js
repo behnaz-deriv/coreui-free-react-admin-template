@@ -2,7 +2,7 @@ import React, { useState, useMemo } from 'react'
 import { CCard, CCardBody, CCardHeader, CTable } from '@coreui/react'
 import Filters from './Filters'
 
-const TransactionsList = () => {
+const TransactionsList = ({ data: transactionsData, chartData }) => {
   const [filters, setFilters] = useState({
     platform: '',
     country: '',
@@ -11,63 +11,32 @@ const TransactionsList = () => {
   const textColor = '#fff'
   const chartBackground = '#1e1e2f'
 
-  // Sample data with country field - replace with actual data
-  const allTransactions = [
-    {
-      id: '1',
-      date: '2024-02-08',
-      platform: 'MT5',
-      amount: '$1,234.56',
-      method: 'Credit Card',
-      status: 'Completed',
-      country: 'Malaysia',
-    },
-    {
-      id: '2',
-      date: '2024-02-08',
-      platform: 'cTrader',
-      amount: '$2,345.67',
-      method: 'Bank Transfer',
-      status: 'Pending',
-      country: 'Indonesia',
-    },
-    {
-      id: '3',
-      date: '2024-02-08',
-      platform: 'DerivX',
-      amount: '$3,456.78',
-      method: 'E-wallet',
-      status: 'Completed',
-      country: 'Thailand',
-    },
-    {
-      id: '4',
-      date: '2024-02-07',
-      platform: 'MT5',
-      amount: '$4,567.89',
-      method: 'Cryptocurrency',
-      status: 'Failed',
-      country: 'Vietnam',
-    },
-    {
-      id: '5',
-      date: '2024-02-07',
-      platform: 'cTrader',
-      amount: '$5,678.90',
-      method: 'Wire Transfer',
-      status: 'Completed',
-      country: 'Philippines',
-    },
-  ]
+  const transactions = transactionsData?.data || []
 
-  const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
-      case 'completed':
-        return '#2eb85c'
-      case 'pending':
-        return '#f9b115'
-      case 'failed':
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
+  }
+
+  const formatAmount = (amount) => {
+    if (amount === null) return '-'
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    }).format(amount)
+  }
+
+  const getTypeColor = (type) => {
+    switch (type.toLowerCase()) {
+      case 'withdrawal':
         return '#e55353'
+      case 'deposit':
+        return '#2eb85c'
+      case 'trade':
+        return '#f9b115'
       default:
         return '#ffffff'
     }
@@ -81,13 +50,13 @@ const TransactionsList = () => {
   }
 
   const filteredTransactions = useMemo(() => {
-    return allTransactions.filter((transaction) => {
+    return transactions.filter((transaction) => {
       const platformMatch = !filters.platform || transaction.platform === filters.platform
       const countryMatch = !filters.country || transaction.country === filters.country
-      const methodMatch = !filters.paymentMethod || transaction.method === filters.paymentMethod
+      const methodMatch = !filters.paymentMethod || transaction.payment_method === filters.paymentMethod
       return platformMatch && countryMatch && methodMatch
     })
-  }, [filters, allTransactions])
+  }, [filters, transactions])
 
   return (
     <CCard
@@ -101,7 +70,7 @@ const TransactionsList = () => {
         <h4 className="mb-0" style={{ color: textColor }}>
           Recent Transactions
         </h4>
-        <Filters onFilterChange={handleFilterChange} />
+        <Filters onFilterChange={handleFilterChange} chartData={chartData} />
       </CCardHeader>
       <CCardBody>
         <div
@@ -124,28 +93,45 @@ const TransactionsList = () => {
           >
             <thead>
               <tr>
+                <th>Transaction ID</th>
+                <th>Client ID</th>
                 <th>Date</th>
-                <th>Platform</th>
+                <th>Type</th>
                 <th>Amount</th>
-                <th>Method</th>
-                <th>Status</th>
+                <th>Platform</th>
+                <th>Payment Method</th>
+                <th>Country</th>
+                <th>KYC</th>
               </tr>
             </thead>
             <tbody>
               {filteredTransactions.map((transaction) => (
-                <tr key={transaction.id}>
-                  <td>{transaction.date}</td>
-                  <td>{transaction.platform}</td>
-                  <td>{transaction.amount}</td>
-                  <td>{transaction.method}</td>
+                <tr key={transaction.transaction_id}>
+                  <td>{transaction.transaction_id}</td>
+                  <td>{transaction.client_id}</td>
+                  <td>{formatDate(transaction.transaction_date)}</td>
                   <td>
                     <span
                       style={{
-                        color: getStatusColor(transaction.status),
+                        color: getTypeColor(transaction.transaction_type),
                         fontWeight: '500',
                       }}
                     >
-                      {transaction.status}
+                      {transaction.transaction_type}
+                    </span>
+                  </td>
+                  <td>{formatAmount(transaction.amount)}</td>
+                  <td>{transaction.platform}</td>
+                  <td>{transaction.payment_method || '-'}</td>
+                  <td>{transaction.country}</td>
+                  <td>
+                    <span
+                      style={{
+                        color: transaction.kyc_completed ? '#2eb85c' : '#e55353',
+                        fontWeight: '500',
+                      }}
+                    >
+                      {transaction.kyc_completed ? 'Yes' : 'No'}
                     </span>
                   </td>
                 </tr>

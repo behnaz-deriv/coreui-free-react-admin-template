@@ -2,19 +2,19 @@ import React from 'react'
 import { CCard, CCardBody, CCardHeader, CCol, CRow } from '@coreui/react'
 import { CChart } from '@coreui/react-chartjs'
 
-const FraudMap = () => {
+const FraudMap = ({ data }) => {
+  if (!data) return null
   const textColor = '#fff'
   const gridColor = 'rgba(255, 255, 255, 0.1)'
   const tooltipBackground = 'rgba(0, 0, 0, 0.9)'
   const chartBackground = '#1e1e2f'
 
-  // Sample data - replace with actual data
   const fraudData = {
-    labels: ['Malaysia', 'Indonesia', 'Thailand', 'Vietnam', 'Philippines'],
+    labels: data.data.map(item => item.country),
     datasets: [
       {
         label: 'Fraud Cases',
-        data: [65, 59, 80, 81, 56],
+        data: data.data.map(item => item.cases),
         backgroundColor: (context) => {
           const chart = context.chart
           const { ctx, chartArea } = chart
@@ -77,7 +77,7 @@ const FraudMap = () => {
                     },
                     title: {
                       display: true,
-                      text: 'Regions',
+                      text: data.title || 'Trending Countries for Fraud',
                       color: textColor,
                       font: {
                         size: 16,
@@ -88,7 +88,13 @@ const FraudMap = () => {
                     },
                     tooltip: {
                       callbacks: {
-                        label: (context) => `Cases: ${context.parsed.y}`,
+                        label: (context) => {
+                          const item = data.data[context.dataIndex]
+                          return [
+                            `Cases: ${item.cases.toLocaleString()}`,
+                            `Amount: $${item.amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`
+                          ]
+                        },
                       },
                       titleColor: textColor,
                       bodyColor: textColor,

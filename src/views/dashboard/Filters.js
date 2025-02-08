@@ -1,50 +1,27 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { CCol, CRow, CFormSelect, CSpinner } from '@coreui/react'
 
-const Filters = ({ onFilterChange }) => {
-  const [countries, setCountries] = useState([])
-  const [loading, setLoading] = useState(true)
+const Filters = ({ onFilterChange, chartData }) => {
   const textColor = '#fff'
   const selectBackground = '#1e1e2f'
 
-  useEffect(() => {
-    const fetchCountries = async () => {
-      try {
-        const response = await fetch('https://restcountries.com/v3.1/all')
-        const data = await response.json()
-        
-        // Sort countries by name
-        const sortedCountries = data
-          .map(country => country.name.common)
-          .sort((a, b) => a.localeCompare(b))
-        
-        setCountries(['All Countries', ...sortedCountries])
-        setLoading(false)
-      } catch (error) {
-        console.error('Error fetching countries:', error)
-        setCountries(['All Countries']) // Fallback
-        setLoading(false)
-      }
-    }
+  // Get unique countries from transactions data
+  const countries = useMemo(() => {
+    const countryList = chartData?.suspected_transactions?.data?.map(t => t.country) || []
+    return ['All Countries', ...new Set(countryList)].sort()
+  }, [chartData])
 
-    fetchCountries()
-  }, [])
+  // Get unique platforms from trading_platforms data
+  const platforms = useMemo(() => {
+    const platformList = chartData?.trading_platforms?.data?.map(p => p.platform) || []
+    return ['All Platforms', ...new Set(platformList)]
+  }, [chartData])
 
-  // Sample filter options - replace with actual data
-  const platforms = ['All Platforms', 'MT5', 'cTrader', 'DerivX', 'Other']
-  const paymentMethods = [
-    'All Payment Methods',
-    'Credit/Debit Card',
-    'Bank Transfer',
-    'E-wallet',
-    'Cryptocurrency',
-    'Online Banking',
-    'Mobile Payment',
-    'Wire Transfer',
-    'Local Payment Methods',
-    'Digital Wallets',
-    'Prepaid Cards',
-  ]
+  // Get unique payment methods from payment_methods data
+  const paymentMethods = useMemo(() => {
+    const methodList = chartData?.payment_methods?.data?.map(p => p.method) || []
+    return ['All Payment Methods', ...new Set(methodList)]
+  }, [chartData])
 
   const handleFilterChange = (type, value) => {
     onFilterChange(type, value)
@@ -74,21 +51,15 @@ const Filters = ({ onFilterChange }) => {
         />
       </CCol>
       <CCol sm={12} md={4}>
-        {loading ? (
-          <div className="d-flex align-items-center" style={{ height: '38px' }}>
-            <CSpinner size="sm" color="light" className="ms-2" />
-          </div>
-        ) : (
-          <CFormSelect
-            style={selectStyles}
-            onChange={(e) => handleFilterChange('country', e.target.value)}
-            className="shadow-sm"
-            options={countries.map((country) => ({
-              label: country,
-              value: country === 'All Countries' ? '' : country,
-            }))}
-          />
-        )}
+        <CFormSelect
+          style={selectStyles}
+          onChange={(e) => handleFilterChange('country', e.target.value)}
+          className="shadow-sm"
+          options={countries.map((country) => ({
+            label: country,
+            value: country === 'All Countries' ? '' : country,
+          }))}
+        />
       </CCol>
       <CCol sm={12} md={4}>
         <CFormSelect

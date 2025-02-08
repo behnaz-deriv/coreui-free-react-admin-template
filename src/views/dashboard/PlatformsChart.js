@@ -2,7 +2,8 @@ import React from 'react'
 import { CCard, CCardBody, CCardHeader, CCol, CRow } from '@coreui/react'
 import { CChart } from '@coreui/react-chartjs'
 
-const PlatformsChart = () => {
+const PlatformsChart = ({ data }) => {
+  if (!data) return null
   const textColor = '#fff'
   const gridColor = 'rgba(255, 255, 255, 0.1)'
   const tooltipBackground = 'rgba(0, 0, 0, 0.9)'
@@ -29,12 +30,11 @@ const PlatformsChart = () => {
     ],
   }
 
-  // Sample data - replace with actual data
   const platformData = {
-    labels: ['MT5', 'cTrader', 'DerivX', 'Other'],
+    labels: data.data.map(item => item.platform),
     datasets: [
       {
-        data: [40, 30, 20, 10],
+        data: data.data.map(item => item.percentage),
         backgroundColor: colors.backgroundColor,
         borderColor: colors.borderColor,
         borderWidth: 2,
@@ -145,30 +145,32 @@ const PlatformsChart = () => {
                 }}
               />
               {/* Center text */}
-              <div style={{
-                position: 'absolute',
-                top: '50%',
-                left: '35%',
-                transform: 'translate(-50%, -50%)',
-                textAlign: 'center',
-              }}>
-                <div style={{ 
-                  color: textColor,
-                  fontSize: '2.5rem',
-                  fontWeight: '600',
-                  marginBottom: '5px',
-                  fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+              {data.total && (
+                <div style={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '35%',
+                  transform: 'translate(-50%, -50%)',
+                  textAlign: 'center',
                 }}>
-                  100%
+                  <div style={{ 
+                    color: textColor,
+                    fontSize: '2.5rem',
+                    fontWeight: '600',
+                    marginBottom: '5px',
+                    fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+                  }}>
+                    {data.total}
+                  </div>
+                  <div style={{ 
+                    color: 'rgba(255,255,255,0.7)',
+                    fontSize: '0.9rem',
+                    fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
+                  }}>
+                    Total Distribution
+                  </div>
                 </div>
-                <div style={{ 
-                  color: 'rgba(255,255,255,0.7)',
-                  fontSize: '0.9rem',
-                  fontFamily: "'Segoe UI', 'Helvetica Neue', Arial, sans-serif",
-                }}>
-                  Total Distribution
-                </div>
-              </div>
+              )}
             </div>
           </CCol>
         </CRow>

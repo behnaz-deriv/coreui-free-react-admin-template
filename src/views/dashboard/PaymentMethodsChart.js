@@ -2,30 +2,19 @@ import React from 'react'
 import { CCard, CCardBody, CCardHeader, CCol, CRow } from '@coreui/react'
 import { CChart } from '@coreui/react-chartjs'
 
-const PaymentMethodsChart = () => {
+const PaymentMethodsChart = ({ data }) => {
+  if (!data) return null
   const textColor = '#fff'
   const gridColor = 'rgba(255, 255, 255, 0.1)'
   const tooltipBackground = 'rgba(0, 0, 0, 0.9)'
   const chartBackground = '#1e1e2f'
 
-  // Sample data - replace with actual data
   const paymentData = {
-    labels: [
-      'Credit/Debit Card',
-      'Bank Transfer',
-      'E-wallet',
-      'Cryptocurrency',
-      'Online Banking',
-      'Mobile Payment',
-      'Wire Transfer',
-      'Local Payment Methods',
-      'Digital Wallets',
-      'Prepaid Cards',
-    ],
+    labels: data.data.map(item => item.method),
     datasets: [
       {
         label: 'Transaction Volume',
-        data: [65, 59, 80, 81, 56, 55, 40, 35, 30, 25],
+        data: data.data.map(item => item.volume),
         backgroundColor: (context) => {
           const chart = context.chart
           const { ctx, chartArea } = chart
@@ -88,9 +77,9 @@ const PaymentMethodsChart = () => {
                     legend: {
                       display: false,
                     },
-                    title: {
-                      display: true,
-                      text: 'Payment Methods by Volume',
+                      title: {
+                        display: true,
+                        text: data.title || 'Payment Methods by Volume',
                       color: textColor,
                       font: {
                         size: 16,
@@ -101,7 +90,13 @@ const PaymentMethodsChart = () => {
                     },
                     tooltip: {
                       callbacks: {
-                        label: (context) => `Volume: ${context.parsed.x}`,
+                        label: (context) => {
+                          const item = data.data[context.dataIndex]
+                          return [
+                            `Volume: ${item.volume.toLocaleString()}`,
+                            `Count: ${item.count.toLocaleString()}`
+                          ]
+                        },
                       },
                       titleColor: textColor,
                       bodyColor: textColor,
