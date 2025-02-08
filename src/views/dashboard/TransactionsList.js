@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import { CCard, CCardBody, CCardHeader, CTable } from '@coreui/react'
-import { fetchClientTransactions } from '../../services/chartService'
+import { fetchClientTransactions, updateClientStatus } from '../../services/chartService'
 import TransactionsModal from './TransactionsModal'
 
 const TransactionsList = ({ data: transactionsData }) => {
   const [modalVisible, setModalVisible] = useState(false)
   const [selectedClientTransactions, setSelectedClientTransactions] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [updatingClientId, setUpdatingClientId] = useState(null)
 
   const textColor = '#fff'
   const chartBackground = '#1e1e2f'
@@ -67,10 +68,11 @@ const TransactionsList = ({ data: transactionsData }) => {
             >
               <thead>
                 <tr>
-                  <th>Client ID</th>
-                  <th>Country</th>
-                  <th>KYC Status</th>
-                  <th>Account Status</th>
+                <th>Client ID</th>
+                <th>Country</th>
+                <th>KYC Status</th>
+                <th>Account Status</th>
+                <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -95,14 +97,51 @@ const TransactionsList = ({ data: transactionsData }) => {
                     <td>
                       <span
                         style={{
-                          color: transaction.account_status === 'Normal' ? '#2eb85c' : '#e55353',
+                          color: transaction.account_status === 'Normal' ? '#2eb85c' : 
+                                transaction.account_status === 'Suspicious' ? '#f9b115' :
+                                transaction.account_status === 'High Risk' ? '#fd7e14' : '#e55353',
                           fontWeight: '500',
                         }}
                       >
                         {transaction.account_status}
-                      </span>
-                    </td>
-                  </tr>
+                    </span>
+                  </td>
+                  <td>
+                    {transaction.account_status !== 'Normal' && (
+                      <button
+                        style={{
+                          backgroundColor: transaction.account_status === 'Blocked' ? '#2eb85c' : '#e55353',
+                          color: '#fff',
+                          border: 'none',
+                          padding: '6px 12px',
+                          borderRadius: '4px',
+                          cursor: 'pointer',
+                          fontSize: '14px',
+                          fontWeight: '500',
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation(); // Prevent row click
+                          setUpdatingClientId(transaction.client_id);
+                          const newStatus = transaction.account_status === 'Blocked' ? 'Normal' : 'Blocked';
+                          updateClientStatus(transaction.client_id, newStatus)
+                            .then(() => {
+                              // Refresh the data after status update
+                              window.location.reload();
+                            })
+                            .catch((error) => {
+                              console.error('Error updating client status:', error);
+                            })
+                            .finally(() => {
+                              setUpdatingClientId(null);
+                            });
+                        }}
+                      >
+                        {updatingClientId === transaction.client_id ? 'Updating...' : 
+                          transaction.account_status === 'Blocked' ? 'Unblock' : 'Block'}
+                      </button>
+                    )}
+                  </td>
+                </tr>
                 ))}
               </tbody>
             </CTable>
